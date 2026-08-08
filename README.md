@@ -38,40 +38,6 @@ cargo run --release -- BTCUSDT ETHUSDT
 ```
 ___
 
-## Interpreting the Visualization
-### Geometry
-
-Each order‑book update is mapped into a point:
-
-    x = normalized price offset
-
-    y = normalized depth rank
-
-    radius = depth magnitude
-
-    color = bid (blue) or ask (red)
-
-    alpha = temporal fading (newer = brighter)
-
-This produces a dynamic “liquidity cloud.”
-Topology (TDA)
-
-### The viewer computes:
-
-    Betti‑0 -> number of connected components
-
-    Betti‑1 -> number of cycles in the 1‑skeleton graph
-
-### These values quantify the structure of the geometry:
-
-    High Betti‑0 -> fragmentation
-
-    High Betti‑1 -> dense, loopy structure
-
-    Low Betti‑0 -> unified liquidity blob
-
-    Low Betti‑1 -> sparse or simple geometry
-
 ### Limitations
 
     This is not a trading tool.
