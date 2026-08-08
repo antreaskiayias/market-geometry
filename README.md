@@ -24,7 +24,7 @@ This viewer helps you explore whether market microstructure has meaningful geome
 
 ## Prerequisites
 
-Engusre rust is installed, refer to the rust documentation for installation instructions.
+Engusre rust is installed, refer to the [rust documentation](https://rust-lang.org/tools/install/) for installation instructions.
 
 Clone and build:
 ```bash
