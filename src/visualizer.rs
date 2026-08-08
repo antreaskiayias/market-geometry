@@ -78,13 +78,22 @@ impl eframe::App for GuiApp {
                 ui.heading(format!("Point Cloud: {}", self.active_symbol));
 
                 // Convert CloudPoint to Vector2
-                let pts: Vec<_> = cloud.iter().map(|p| to_vec2(p)).collect();
+                // --- NEW CODE (Fixed Scaling + Subsampling) ---
+                // 1. Cap TDA input to the 150 most recent points to prevent O(N^3) matrix explosion
+                // 2. Scale 'x' by 15.0 so price offset [-0.03, 0.03] matches volume scale [0.0, 1.0]
+                const TDA_SAMPLE_SIZE: usize = 150;
+                let tda_pts: Vec<_> = cloud
+                    .iter()
+                    .rev() // Take newest points first
+                    .take(TDA_SAMPLE_SIZE)
+                    .map(|p| nalgebra::Vector2::new(p.x * 15.0, p.y)) 
+                    .collect();
 
-                // epsilon scale
-                let eps = 0.02;
+                // 3. Use an epsilon threshold aligned with the normalized axes
+                let eps = 0.05;
 
-                // Compute Betti numbers
-                let (betti0, betti1) = compute_betti(&pts, eps);
+                // 4. Compute Betti numbers on the sampled subset
+                let (betti0, betti1) = compute_betti(&tda_pts, eps);
 
                 // Show them in the UI
                 ui.label(format!("Betti-0 (components): {}", betti0));
