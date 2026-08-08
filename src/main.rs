@@ -12,6 +12,8 @@ use point_cloud::{snapshot_to_point_cloud, CloudPoint};
 mod binance;
 use binance::fetch_snapshot;
 
+mod tda;
+
 mod visualizer;
 use visualizer::{Visualizer, GuiApp};
 

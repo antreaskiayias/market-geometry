@@ -5,6 +5,8 @@ use std::sync::{Arc, Mutex};
 use crate::point_cloud::CloudPoint;
 use crate::order_book::Side;
 
+use crate::tda::compute_betti;
+
 // use egui_plot::{PlotPoints, Line};
 
 #[derive(Clone)]
@@ -75,6 +77,20 @@ impl eframe::App for GuiApp {
             if let Some(cloud) = clouds.get(&self.active_symbol) {
                 ui.heading(format!("Point Cloud: {}", self.active_symbol));
 
+                // Convert CloudPoint to Vector2
+                let pts: Vec<_> = cloud.iter().map(|p| to_vec2(p)).collect();
+
+                // epsilon scale
+                let eps = 0.02;
+
+                // Compute Betti numbers
+                let (betti0, betti1) = compute_betti(&pts, eps);
+
+                // Show them in the UI
+                ui.label(format!("Betti-0 (components): {}", betti0));
+                ui.label(format!("Betti-1 (cycles): {}", betti1));
+                ui.separator();
+
                 Plot::new(&self.active_symbol)
                     .allow_zoom(true)
                     .allow_drag(true)
@@ -108,4 +124,8 @@ impl eframe::App for GuiApp {
 
         ctx.request_repaint();
     }
+}
+
+fn to_vec2(p: &CloudPoint) -> nalgebra::Vector2<f64> {
+    nalgebra::Vector2::new(p.x as f64, p.y as f64)
 }
